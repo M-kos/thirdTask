@@ -1,15 +1,18 @@
 let colors = ['#FFC618', '#FF6418', '#FF1A18', '#FF1894', '#8118FF', '#2218FF', '#18EAFF', '#18FF32', '#FFC618', '#FF6418', '#FF1A18', '#FF1894', '#8118FF', '#2218FF', '#18EAFF', '#18FF32'];
 
 const blocks = document.querySelectorAll('.block');
-const btnStart = document.querySelector('.start');
+const btnStart = document.querySelector('#start');
 
 let count = 0;
+let counColoredBlocks = 0;
 let dataAtrib = [];
 let colorStyle = [];
+let timerOn;
 
 btnStart.addEventListener('click', start);
 
 function start() {
+    clearAll();
     colors = shuffle(colors);
 
     blocks.forEach(el => {
@@ -18,7 +21,7 @@ function start() {
 
     let time = new Date();
     let nowDate = new Date();
-    setInterval(timer, 50, time,nowDate);
+    timerOn = setInterval(timer, 50, time,nowDate);
 }
 
 function shuffle(arr){
@@ -50,16 +53,30 @@ function check(){
             colorStyle.pop();
         } else {
             if (colorStyle[0] === colorStyle[1]) {
-                coincide()
+                coincide();
+                counColoredBlocks++;
+                if (counColoredBlocks === 8) {
+                    win();
+                }
             } else {
-                setTimeout(clear, 600);
+                setTimeout(clearBlock, 600);
             }
             count = 0;
         }
     }
 }
 
-function clear() {
+function clearAll() {
+    blocks.forEach(el => {
+        el.removeAttribute('style');
+    });
+    dataAtrib.length = 0;
+    colorStyle.length = 0;
+    count = 0;
+    counColoredBlocks = 0;
+}
+
+function clearBlock() {
 
     blocks.forEach(el => {
         if (el.getAttribute('data-number-block') === dataAtrib[0] || el.getAttribute('data-number-block') === dataAtrib[1]) {
@@ -80,7 +97,6 @@ function coincide() {
     colorStyle.splice(0, 2);
 }
 
-
 function timer(t, n) {
     const timer = document.getElementById('timer');
     let ms;
@@ -98,4 +114,19 @@ function timer(t, n) {
     if (s < 10) s = '0' + s;
     if (m < 10) m = '0' + m;
     timer.innerHTML = m + ':' + s + ':' + ms;
+}
+
+function win() {
+    clearInterval(timerOn);
+    const timer = document.getElementById('timer');
+    const modal = document.querySelector('.modal');
+    const winText = document.querySelector('#win-time');
+    const closeBtn = document.querySelector('#close-window');
+
+    modal.style.display = 'block';
+    let text = winText.innerHTML + ' ' + timer.innerHTML;
+    winText.innerHTML = text;
+    closeBtn.addEventListener('click', () => {
+        modal.style.display = 'none';
+    });
 }
