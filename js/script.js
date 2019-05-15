@@ -1,36 +1,29 @@
 let colors = ['#FFC618', '#FF6418', '#FF1A18', '#FF1894', '#8118FF', '#2218FF', '#18EAFF', '#18FF32', '#FFC618', '#FF6418', '#FF1A18', '#FF1894', '#8118FF', '#2218FF', '#18EAFF', '#18FF32'];
 
 const blocks = document.querySelectorAll('.block');
+const btnStart = document.querySelector('.start');
 
-colors = shuffle(colors);
+// colors = shuffle(colors);
 
 let count = 0;
 let dataAtrib = [];
 let colorStyle = [];
 
-for (let i = 0; i < blocks.length; i++) {
-    blocks[i].addEventListener('click', clickHandler);
-}
+// blocks.forEach(el => {
+//     el.addEventListener('click', clickHandler);
+// });
 
-// if (count === 2) {
-//     if (dataAtrib[0] === dataAtrib[1]) {
-//         count--;
-//     } else {
-//         if (colorStyle[0] === colorStyle[1]) {
-//             for (let i = 0; i < blocks.length; i++) {
-//                 if (blocks[i].getAttribute('data-number-block') === dataAtrib[0] || blocks[i].getAttribute('data-number-block') === dataAtrib[1]) {
-//                     blocks[i].removeEventListener('click', clickHandler);
-//                 }
-//             }
-//         } else {
-//             for (let i = 0; i < blocks.length; i++) {
-//                 if (blocks[i].getAttribute('data-number-block') === dataAtrib[0] || blocks[i].getAttribute('data-number-block') === dataAtrib[1]) {
-//                     blocks[i].removeAttribute('style');
-//                 }
-//             }
-//         }
-//     }
-// }
+btnStart.addEventListener('click', start);
+
+function start() {
+    colors = shuffle(colors);
+
+    blocks.forEach(el => {
+        el.addEventListener('click', clickHandler);
+    });
+
+    timer();
+}
 
 function shuffle(arr){
     var j, temp;
@@ -44,21 +37,16 @@ function shuffle(arr){
 }
 
 function clickHandler() {
-    // let dataAtrib = blocks[i].dataSet.numberBlock;
-    // let dataAtrib = blocks[i].getAttribute('data-number-block');
-    // console.log(event);
-    // console.log(this);
-    // blocks[i].style.backgroundColor = colors[i];
-    this.style.backgroundColor = colors[this.getAttribute('data-number-block')];
-    // count++;
-    // dataAtrib.push(blocks[i].getAttribute('data-number-block'));
-    // colorStyle.push(colors[i]);
-    dataAtrib.push(this.getAttribute('data-number-block'));
-    colorStyle.push(colors[this.getAttribute('data-number-block')]);
+    let atr = this.getAttribute('data-number-block');
+
+    this.style.backgroundColor = colors[atr];
+    dataAtrib.push(atr);
+    colorStyle.push(colors[atr]);
+    console.log(dataAtrib);
+    console.log(colorStyle);
     check();
-    // console.log(dataAtrib);
-    // console.log(colorStyle);
 }
+
 function check(){
     count++;
     if (count === 2) {
@@ -68,27 +56,36 @@ function check(){
             colorStyle.pop();
         } else {
             if (colorStyle[0] === colorStyle[1]) {
-                for (let i = 0; i < blocks.length; i++) {
-                    if (blocks[i].getAttribute('data-number-block') === dataAtrib[0] || blocks[i].getAttribute('data-number-block') === dataAtrib[1]) {
-                        blocks[i].removeEventListener('click', clickHandler);
-                    }
-                }
-                dataAtrib.splice(0, 2);
-                colorStyle.splice(0, 2);
+                coincide()
             } else {
-                setTimeout(clear, 500);
-                
+                setTimeout(clear, 800);
             }
             count = 0;
         }
     }
 }
+
 function clear() {
-    for (let i = 0; i < blocks.length; i++) {
-        if (blocks[i].getAttribute('data-number-block') === dataAtrib[0] || blocks[i].getAttribute('data-number-block') === dataAtrib[1]) {
-            blocks[i].removeAttribute('style');
+
+    blocks.forEach(el => {
+        if (el.getAttribute('data-number-block') === dataAtrib[0] || el.getAttribute('data-number-block') === dataAtrib[1]) {
+            el.removeAttribute('style');
         }
-    }
+    });
     dataAtrib.splice(0, 2);
     colorStyle.splice(0, 2);
+}
+
+function coincide() {
+    blocks.forEach(el => {
+        if (el.getAttribute('data-number-block') === dataAtrib[0] || el.getAttribute('data-number-block') === dataAtrib[1]) {
+            el.removeEventListener('click', clickHandler);
+        }
+    });
+    dataAtrib.splice(0, 2);
+    colorStyle.splice(0, 2);
+}
+
+function timer() {
+    
 }
