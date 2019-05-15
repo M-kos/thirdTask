@@ -3,15 +3,9 @@ let colors = ['#FFC618', '#FF6418', '#FF1A18', '#FF1894', '#8118FF', '#2218FF', 
 const blocks = document.querySelectorAll('.block');
 const btnStart = document.querySelector('.start');
 
-// colors = shuffle(colors);
-
 let count = 0;
 let dataAtrib = [];
 let colorStyle = [];
-
-// blocks.forEach(el => {
-//     el.addEventListener('click', clickHandler);
-// });
 
 btnStart.addEventListener('click', start);
 
@@ -22,7 +16,9 @@ function start() {
         el.addEventListener('click', clickHandler);
     });
 
-    timer();
+    let time = new Date();
+    let nowDate = new Date();
+    setInterval(timer, 50, time,nowDate);
 }
 
 function shuffle(arr){
@@ -42,8 +38,6 @@ function clickHandler() {
     this.style.backgroundColor = colors[atr];
     dataAtrib.push(atr);
     colorStyle.push(colors[atr]);
-    console.log(dataAtrib);
-    console.log(colorStyle);
     check();
 }
 
@@ -58,7 +52,7 @@ function check(){
             if (colorStyle[0] === colorStyle[1]) {
                 coincide()
             } else {
-                setTimeout(clear, 800);
+                setTimeout(clear, 600);
             }
             count = 0;
         }
@@ -86,6 +80,22 @@ function coincide() {
     colorStyle.splice(0, 2);
 }
 
-function timer() {
-    
+
+function timer(t, n) {
+    const timer = document.getElementById('timer');
+    let ms;
+    let s;
+    let m;
+
+    t.setTime(Date.now() - n);
+    ms = t.getUTCMilliseconds();
+    s = t.getUTCSeconds();
+    m = t.getUTCMinutes();
+    if (ms < 100) {
+        if (ms < 10) ms = '00' + ms;
+        else ms = '0' + ms;
+    }
+    if (s < 10) s = '0' + s;
+    if (m < 10) m = '0' + m;
+    timer.innerHTML = m + ':' + s + ':' + ms;
 }
